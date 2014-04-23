@@ -17,10 +17,8 @@
             android:layout_alignParentTop="true"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="88dp"
-            android:ems="10" >
-
-            <requestFocus />
-        </EditText>
+            android:ems="10"
+            android:hint="From" />
 
         <EditText
             android:id="@+id/editText2"
@@ -28,17 +26,9 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/editText1"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="16dp"
-            android:ems="10" />
-
-        <DatePicker
-            android:id="@+id/datePicker1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/editText2"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="20dp"
-            android:calendarViewShown="false" />
+            android:layout_marginTop="24dp"
+            android:ems="10"
+            android:hint="To" />
 
         <TextView
             android:id="@+id/textView1"
@@ -49,6 +39,52 @@
             android:layout_marginTop="35dp"
             android:text="BusRide"
             android:textAppearance="?android:attr/textAppearanceLarge" />
+
+        <EditText
+            android:id="@+id/editText3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/editText2"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="24dp"
+            android:editable="false"
+            android:ems="10"
+            android:focusable="false"
+            android:hint="Depart Date"
+            android:onClick="showDatePickerDialog" />
+
+        <EditText
+            android:id="@+id/editText4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/editText3"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="24dp"
+            android:ems="10"
+            android:hint="Return Date"
+            android:editable="false"
+            android:focusable="false"
+            android:visibility= "gone"
+            android:onClick="showDatePickerDialog" />
+
+        <CheckBox
+            android:id="@+id/checkBox1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/editText4"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="24dp"
+            android:text="Round Trip" />
+
+        <Button
+            android:id="@+id/button1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/checkBox1"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="24dp"
+            android:text="Search"
+            android:onClick= "dosearch" />
 
     </RelativeLayout>
 

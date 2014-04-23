@@ -4,5 +4,6 @@
     <string name="app_name">BusRide</string>
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
+    <string name="title_activity_do_search">DoSearch</string>
 
 </resources>

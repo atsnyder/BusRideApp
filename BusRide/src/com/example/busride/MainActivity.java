@@ -2,23 +2,33 @@ package com.example.busride;
 
 import java.util.Calendar;
 
+
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBar;
 import android.support.v4.app.Fragment;
+import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.DatePicker;
+import android.widget.EditText;
 import android.os.Build;
 
 public class MainActivity extends ActionBarActivity {
 
+	public final static String EXTRA_MESSAGE = "com.example.dosearch.MESSAGE";
+	
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -28,6 +38,24 @@ public class MainActivity extends ActionBarActivity {
 			getSupportFragmentManager().beginTransaction()
 					.add(R.id.container, new PlaceholderFragment()).commit();
 		}
+		
+		CheckBox repeatChkBx = ( CheckBox ) findViewById( R.id.checkBox1 );
+		repeatChkBx.setOnCheckedChangeListener(new OnCheckedChangeListener()
+		{
+			@Override
+		    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked)
+		    {
+				EditText returntrip = (EditText) findViewById(R.id.editText4);
+		        if ( isChecked )
+		        {
+		            returntrip.setVisibility(View.VISIBLE);
+		        }
+		        else
+		        {
+		        	returntrip.setVisibility(View.GONE);
+		        }
+		    }
+		});
 	}
 
 	@Override
@@ -49,6 +77,27 @@ public class MainActivity extends ActionBarActivity {
 		}
 		return super.onOptionsItemSelected(item);
 	}
+	
+	public void dosearch(View view){
+		Intent intent = new Intent(this, DoSearch.class);
+		
+		EditText editText1 = (EditText) findViewById(R.id.editText1);
+		String fromcity = editText1.getText().toString();
+		EditText editText2 = (EditText) findViewById(R.id.editText2);
+		String tocity = editText2.getText().toString();
+		EditText editText3 = (EditText) findViewById(R.id.editText3);
+		String fromdate = editText3.getText().toString();
+		EditText editText4 = (EditText) findViewById(R.id.editText4);
+		String todate = editText4.getText().toString();
+		CheckBox checkbox = ( CheckBox ) findViewById( R.id.checkBox1 );
+		Boolean radio = checkbox.isChecked();
+		
+		StringBuilder urlString = new StringBuilder();
+		urlString.append("http://murmuring-inlet-3093.herokuapp.com/api?from_city=" + fromcity + "&to_city=" + tocity + "&from_date=" + fromdate + "&to_date=" + todate + "&radio=" + radio.toString());
+	
+		intent.putExtra(EXTRA_MESSAGE, urlString.toString());
+		startActivity(intent);	
+	}
 
 	/**
 	 * A placeholder fragment containing a simple view.
@@ -68,13 +117,19 @@ public class MainActivity extends ActionBarActivity {
 	}
 	
 	public void showDatePickerDialog(View v) {
-	    DialogFragment newFragment = new DatePickerFragment();
-	    //newFragment.show(getSupportFragmentManager(), "datePicker");
+	    DialogFragment newFragment = new DatePickerFragment((EditText) v);
+	    newFragment.show(getFragmentManager(), "datePicker");
 	}
 	
+	@SuppressLint("ValidFragment")
 	public static class DatePickerFragment extends DialogFragment 
 								implements DatePickerDialog.OnDateSetListener {
+		
+		public EditText activity_edittext;
 
+		public DatePickerFragment(EditText edit_text) {
+		    activity_edittext = edit_text;
+		}
 		@Override
 		public Dialog onCreateDialog(Bundle savedInstanceState) {
 			// Use the current date as the default date in the picker
@@ -88,7 +143,7 @@ public class MainActivity extends ActionBarActivity {
 		}
 
 		public void onDateSet(DatePicker view, int year, int month, int day) {
-			// Do something with the date chosen by the user
+			activity_edittext.setText(String.valueOf(month + 1 ) + "/" +   String.valueOf(day) + "/" + String.valueOf(year));
 		}
 	}
 
