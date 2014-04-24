@@ -93,8 +93,9 @@ public class MainActivity extends ActionBarActivity {
 		Boolean radio = checkbox.isChecked();
 		
 		StringBuilder urlString = new StringBuilder();
-		urlString.append("http://murmuring-inlet-3093.herokuapp.com/api?from_city=" + fromcity + "&to_city=" + tocity + "&from_date=" + fromdate + "&to_date=" + todate + "&radio=" + radio.toString());
-	
+		//urlString.append("http://murmuring-inlet-3093.herokuapp.com/rides/search.json?search[to_city]=new&search[from_city]=wash&date[to_Date]=4/23/2014&date[from_Date]=4/24/2014");
+		urlString.append("http://murmuring-inlet-3093.herokuapp.com/rides/search.json?search[to_city]=" + tocity + "&search[from_city]=" + fromcity + "&date[to_Date]=" + todate + "&date[from_Date]=" + fromdate);
+		
 		intent.putExtra(EXTRA_MESSAGE, urlString.toString());
 		startActivity(intent);	
 	}

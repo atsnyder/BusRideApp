@@ -4,5 +4,61 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.example.busride.DoSearch"
-    tools:ignore="MergeRootFrame" />
+    tools:ignore="MergeRootFrame" >
+
+    <ScrollView
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:scrollbars="none"
+    android:layout_weight="1">
+
+        <TableLayout
+		    android:layout_width="fill_parent"
+		    android:layout_height="wrap_content"
+		    android:stretchColumns="1" >
+
+            <TableRow
+                android:id="@+id/tableRow1" >
+		        <TextView
+		            android:id="@+id/tCol11"
+		            android:padding="3dip" />
+		        <TextView
+		            android:id="@+id/tCol12"
+		            android:padding="3dip" />
+		        <TextView
+		            android:id="@+id/tCol13"
+		            android:gravity="right"
+		            android:padding="3dip" />
+            </TableRow>
+
+            <TableRow
+                android:id="@+id/tableRow2" >
+                <TextView
+		            android:id="@+id/tCol21"
+		            android:padding="3dip" />
+		        <TextView
+		            android:id="@+id/tCol22"
+		            android:padding="3dip" />
+		        <TextView
+		            android:id="@+id/tCol23"
+		            android:gravity="right"
+		            android:padding="3dip" />
+            </TableRow>
+
+            <TableRow
+                android:id="@+id/tableRow3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" >
+            </TableRow>
+
+            <TableRow
+                android:id="@+id/tableRow4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" >
+            </TableRow>
+        </TableLayout>
+    	
+    </ScrollView>
+    
+</FrameLayout>
 
