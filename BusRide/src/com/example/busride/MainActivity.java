@@ -123,8 +123,7 @@ public class MainActivity extends ActionBarActivity {
 	}
 	
 	@SuppressLint("ValidFragment")
-	public static class DatePickerFragment extends DialogFragment 
-								implements DatePickerDialog.OnDateSetListener {
+	public static class DatePickerFragment extends DialogFragment implements DatePickerDialog.OnDateSetListener {
 		
 		public EditText activity_edittext;
 

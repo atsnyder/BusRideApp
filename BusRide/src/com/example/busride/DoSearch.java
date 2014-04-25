@@ -11,13 +11,18 @@ import org.json.JSONObject;
 import org.xmlpull.v1.XmlPullParserException;
 
 
+
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBar;
 import android.support.v4.app.Fragment;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -25,6 +30,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebView;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.os.Build;
 import android.preference.PreferenceManager;
 
@@ -34,6 +40,11 @@ import java.net.URL;
 public class DoSearch extends ActionBarActivity {
 
 	private static String URL = null;
+	
+	// Whether there is a Wi-Fi connection.
+    private static boolean wifiConnected = false;
+    // Whether there is a mobile connection.
+    private static boolean mobileConnected = false;
 
 	
 	@Override
@@ -55,12 +66,44 @@ public class DoSearch extends ActionBarActivity {
         String message = intent.getStringExtra(MainActivity.EXTRA_MESSAGE);
         URL = message;
         
-        new DownloadXmlTask().execute(URL);
+        loadPage();
+        //new DownloadXmlTask().execute(URL);
         
         //TextView textview = (TextView) findViewById(R.id.textView1);
         //textview.setText(message);
         // = message;
         
+    }
+    
+    private void loadPage() {
+    	ConnectivityManager connMgr =
+                (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        NetworkInfo activeInfo = connMgr.getActiveNetworkInfo();
+        if (activeInfo != null && activeInfo.isConnected()) {
+            wifiConnected = activeInfo.getType() == ConnectivityManager.TYPE_WIFI;
+            mobileConnected = activeInfo.getType() == ConnectivityManager.TYPE_MOBILE;
+        } else {
+            wifiConnected = false;
+            mobileConnected = false;
+        }
+        if (wifiConnected || mobileConnected )
+        {
+        	new DownloadXmlTask().execute(URL);
+        } else {
+            showErrorPage();
+        }
+    }
+    
+    private void showErrorPage() {
+    	Context context = getApplicationContext();
+    	CharSequence text = "Unable to load content. Check your network connection.";
+    	int duration = Toast.LENGTH_LONG;
+
+    	Toast toast = Toast.makeText(context, text, duration);
+    	toast.setGravity(Gravity.TOP, 0, 350);
+    	toast.show();
+        super.finish();
     }
 
 	@Override
@@ -107,11 +150,10 @@ public class DoSearch extends ActionBarActivity {
             try {
                 return loadJsonFromNetwork(urls[0]);
             } catch (IOException e) {
-                return getResources().getString(1);
+            	return getResources().getString(R.string.connection_error);
             } catch (JSONException e) {
-				e.printStackTrace();
+            	return getResources().getString(R.string.json_error);
 			}
-			return URL;
         }
 
         @Override
