@@ -107,7 +107,7 @@ public class DoSearch extends ActionBarActivity {
             try {
                 return loadJsonFromNetwork(urls[0]);
             } catch (IOException e) {
-                return getResources().getString(1);
+                return "error here !!";
             } catch (JSONException e) {
 				e.printStackTrace();
 			}
