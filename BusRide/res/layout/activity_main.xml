@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/container"
@@ -10,7 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent" >
 
-        <EditText
+        <AutoCompleteTextView
             android:id="@+id/editText1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -20,7 +21,7 @@
             android:ems="10"
             android:hint="From" />
 
-        <EditText
+        <AutoCompleteTextView
             android:id="@+id/editText2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -86,6 +87,10 @@
             android:text="Search"
             android:onClick= "dosearch" />
 
+        <TextView 
+    		android:layout_width="wrap_content"
+    		android:layout_height="wrap_content" 
+    		android:id = "@+id/autocomplete"/>
     </RelativeLayout>
 
 </FrameLayout>

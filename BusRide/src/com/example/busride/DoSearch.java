@@ -11,20 +11,31 @@ import org.json.JSONObject;
 import org.xmlpull.v1.XmlPullParserException;
 
 
+
 import android.support.v7.app.ActionBar.Tab;
+
+
+
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBar;
 import android.support.v4.app.Fragment;
+
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
 import android.annotation.SuppressLint;
 import android.app.ActionBar.TabListener;
 import android.app.ProgressDialog;
+
+import android.content.Context;
+
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -34,6 +45,7 @@ import android.webkit.WebView;
 import android.widget.EditText;
 import android.widget.TableLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.os.Build;
 import android.preference.PreferenceManager;
 
@@ -43,9 +55,15 @@ import java.net.URL;
 public class DoSearch extends FragmentActivity implements ActionBar.TabListener, TabListener {
 
 	private static String URL = null;
+
 	private ViewPager viewPager;
 	private TabsPagerAdapter mAdapter;
 	private android.app.ActionBar actionBar;
+	
+	// Whether there is a Wi-Fi connection.
+    private static boolean wifiConnected = false;
+    // Whether there is a mobile connection.
+    private static boolean mobileConnected = false;
 	
 	private String[] tabs = {"Depart", "Return"};
 	
@@ -103,14 +121,47 @@ public class DoSearch extends FragmentActivity implements ActionBar.TabListener,
         progress.setTitle("Loading");
         progress.setMessage("Wait while loading...");
         progress.show();*/
-        
-        new DownloadXmlTask().execute(URL);
+
+        loadPage();
+        //new DownloadXmlTask().execute(URL);
+
         
         /*progress.dismiss();*/
         //TextView textview = (TextView) findViewById(R.id.textView1);
         //textview.setText(message);
         // = message;
         
+    }
+    
+    private void loadPage() {
+    	ConnectivityManager connMgr =
+                (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        NetworkInfo activeInfo = connMgr.getActiveNetworkInfo();
+        if (activeInfo != null && activeInfo.isConnected()) {
+            wifiConnected = activeInfo.getType() == ConnectivityManager.TYPE_WIFI;
+            mobileConnected = activeInfo.getType() == ConnectivityManager.TYPE_MOBILE;
+        } else {
+            wifiConnected = false;
+            mobileConnected = false;
+        }
+        if (wifiConnected || mobileConnected )
+        {
+        	new DownloadXmlTask().execute(URL);
+        } else {
+            showErrorPage();
+        }
+    }
+    
+    private void showErrorPage() {
+    	Context context = getApplicationContext();
+    	CharSequence text = "Unable to load content. Check your network connection.";
+    	int duration = Toast.LENGTH_LONG;
+
+    	Toast toast = Toast.makeText(context, text, duration);
+    	toast.setGravity(Gravity.TOP, 0, 350);
+    	toast.show();
+        super.finish();
     }
 
 	@Override
@@ -157,11 +208,10 @@ public class DoSearch extends FragmentActivity implements ActionBar.TabListener,
             try {
                 return loadJsonFromNetwork(urls[0]);
             } catch (IOException e) {
-                return getResources().getString(1);
+            	return getResources().getString(R.string.connection_error);
             } catch (JSONException e) {
-				e.printStackTrace();
+            	return getResources().getString(R.string.json_error);
 			}
-			return URL;
         }
 
         @Override
