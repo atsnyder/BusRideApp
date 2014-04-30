@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TableRow xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id = "@+id/new_trow" >"
+    
+	<TextView
+ 		android:id="@+id/tCol21"
+ 		android:padding="3dip"
+ 		android:text="$22" />
+
+    <LinearLayout
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:orientation="vertical"
+	    android:paddingLeft="10dp" >
+
+       <TextView
+           android:id="@+id/deptime"
+           android:layout_width="wrap_content"
+           android:layout_height="wrap_content"
+           android:text="Depart: 11:20AM April 25th" />
+
+       <TextView
+           android:id="@+id/arrtime"
+           android:layout_width="wrap_content"
+           android:layout_height="wrap_content"
+           android:text="Arrive: 1245PM April 25th" />
+
+       <TextView
+           android:id="@+id/depcity"
+           android:layout_width="wrap_content"
+           android:layout_height="wrap_content"
+           android:text="From: New York, NY" />
+
+       <TextView
+           android:id="@+id/arrcity"
+           android:layout_width="wrap_content"
+           android:layout_height="wrap_content"
+           android:text="To: Washington, DC" />
+
+       <Button
+           android:id="@+id/urlbutton"
+           style="?android:attr/buttonStyleSmall"
+           android:layout_width="wrap_content"
+           android:layout_height="34dp"
+           android:text="View" />
+    
+	</LinearLayout>
+       
+</TableRow>

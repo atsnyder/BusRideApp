@@ -11,9 +11,16 @@ import org.json.JSONObject;
 import org.xmlpull.v1.XmlPullParserException;
 
 
+import android.support.v7.app.ActionBar.Tab;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBar;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v4.view.ViewPager;
+import android.annotation.SuppressLint;
+import android.app.ActionBar.TabListener;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
@@ -24,6 +31,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebView;
+import android.widget.EditText;
+import android.widget.TableLayout;
 import android.widget.TextView;
 import android.os.Build;
 import android.preference.PreferenceManager;
@@ -31,20 +40,55 @@ import android.preference.PreferenceManager;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-public class DoSearch extends ActionBarActivity {
+public class DoSearch extends FragmentActivity implements ActionBar.TabListener, TabListener {
 
 	private static String URL = null;
-
+	private ViewPager viewPager;
+	private TabsPagerAdapter mAdapter;
+	private android.app.ActionBar actionBar;
 	
+	private String[] tabs = {"Depart", "Return"};
+	
+	@SuppressLint("NewApi")
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_do_search);
 
-		if (savedInstanceState == null) {
+		viewPager = (ViewPager) findViewById(R.id.pager);
+        actionBar = getActionBar();
+        mAdapter = new TabsPagerAdapter(getSupportFragmentManager());
+ 
+        viewPager.setAdapter(mAdapter);
+        actionBar.setHomeButtonEnabled(false);
+        actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
+		
+        for (String tab_name : tabs) {
+            actionBar.addTab(actionBar.newTab().setText(tab_name).setTabListener(this));
+        }
+		
+		viewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+
+			@Override
+			public void onPageSelected(int position) {
+				// on changing the page
+				// make respected tab selected
+				actionBar.setSelectedNavigationItem(position);
+			}
+
+			@Override
+			public void onPageScrolled(int arg0, float arg1, int arg2) {
+			}
+
+			@Override
+			public void onPageScrollStateChanged(int arg0) {
+			}
+		});
+        
+		/*if (savedInstanceState == null) {
 			getSupportFragmentManager().beginTransaction()
 					.add(R.id.container, new PlaceholderFragment()).commit();
-		}
+		}*/
 	}
 	
     @Override
@@ -55,8 +99,14 @@ public class DoSearch extends ActionBarActivity {
         String message = intent.getStringExtra(MainActivity.EXTRA_MESSAGE);
         URL = message;
         
+        /*ProgressDialog progress = new ProgressDialog(this);
+        progress.setTitle("Loading");
+        progress.setMessage("Wait while loading...");
+        progress.show();*/
+        
         new DownloadXmlTask().execute(URL);
         
+        /*progress.dismiss();*/
         //TextView textview = (TextView) findViewById(R.id.textView1);
         //textview.setText(message);
         // = message;
@@ -116,21 +166,158 @@ public class DoSearch extends ActionBarActivity {
 
         @Override
         protected void onPostExecute(String result) {
-            setContentView(R.layout.activity_do_search);
+            //setContentView(R.layout.activity_do_search);
             
-            System.out.println(result);
-            
-            String[] rows = result.split("/");
-            String[] items = rows[0].split(":");
-            
-            TextView textview1 = (TextView) findViewById(R.id.tCol11);
-			textview1.setText(items[0]);
-			TextView textview2 = (TextView) findViewById(R.id.tCol12);
-			textview2.setText(items[1]);
-			TextView textview3 = (TextView) findViewById(R.id.tCol13);
-			textview3.setText(items[2]);
+            //System.out.println(result);
+            TableLayout tlay = (TableLayout) findViewById(R.id.maintable);
+
+            String[] rows = result.split("SECRETCODE");
+
+            for (int i = 0; i<rows.length; i++){ 
+            	
+            	String[] cols = rows[i].split("NOTSOCODE");
+            	
+            	View view = getLayoutInflater().inflate(R.layout.new_table_row,tlay,false);
+            	
+            	TextView price = (TextView) view.findViewById(R.id.tCol21);
+            	price.setText("$" + cols[0]);
+            	
+            	TextView depcity = (TextView) view.findViewById(R.id.depcity);
+            	depcity.setText("From: " + cols[1]);
+            	
+            	TextView arrcity = (TextView) view.findViewById(R.id.arrcity);
+            	arrcity.setText("To: " + cols[2]);
+            	
+            	CharSequence formattime = cols[3].subSequence(0,16);
+            	CharSequence fmonth = formattime.subSequence(5,7);
+            	CharSequence fyear = formattime.subSequence(0,4);
+            	CharSequence fday = formattime.subSequence(8,10);
+            	CharSequence fhour = formattime.subSequence(11,13);
+            	CharSequence fminute = formattime.subSequence(14,16);
+            	String smonth = fmonth.toString();
+            	String syear = fyear.toString();
+            	String sday = fday.toString();
+            	String sminute = fminute.toString();
+            	String shour = fhour.toString();
+            	int ihour = Integer.parseInt(shour);
+            	int imonth = Integer.parseInt(smonth);
+            	
+            	String ampm = null;
+            	if (ihour < 12){
+            		ampm = "AM";
+            	}
+            	else {
+            		ampm = "PM";
+            	}
+            	
+            	if(ihour == 0){
+            		ihour = 12;
+            	}
+            	else if (ihour > 12){
+            		ihour = ihour - 12;
+            	}
+            	
+            	String finmonth = null;
+            	switch (imonth) {
+            	case 1: finmonth = "Jan";
+            		break;
+            	case 2: finmonth = "Feb";
+        			break;
+            	case 3: finmonth = "Mar";
+        			break;
+            	case 4: finmonth = "Apr";
+        			break;
+            	case 5: finmonth = "May";
+        			break;
+            	case 6: finmonth = "Jun";
+        			break;
+            	case 7: finmonth = "Jul";
+        			break;
+            	case 8: finmonth = "Aug";
+        			break;
+            	case 9: finmonth = "Sep";
+        			break;
+            	case 10: finmonth = "Oct";
+        			break;
+            	case 11: finmonth = "Nov";
+        			break;
+            	case 12: finmonth = "Dec";
+        			break;
+    			default: finmonth = "dungoofed";
+    				break;
+            	}
+       
+            	TextView deptime = (TextView) view.findViewById(R.id.deptime);
+            	deptime.setText("Depart: " + String.valueOf(ihour) + ":" + sminute + ampm + " " + finmonth + " " + sday + ", " + syear);
+            	
+            	formattime = cols[4].subSequence(0,16);
+            	fmonth = formattime.subSequence(5,7);
+            	fyear = formattime.subSequence(0,4);
+            	fday = formattime.subSequence(8,10);
+            	fhour = formattime.subSequence(11,13);
+            	fminute = formattime.subSequence(14,16);
+            	smonth = fmonth.toString();
+            	syear = fyear.toString();
+            	sday = fday.toString();
+            	sminute = fminute.toString();
+            	shour = fhour.toString();
+            	ihour = Integer.parseInt(shour);
+            	imonth = Integer.parseInt(smonth);
+            	
+            	if (ihour < 12){
+            		ampm = "AM";
+            	}
+            	else {
+            		ampm = "PM";
+            	}
+            	
+            	if(ihour == 0){
+            		ihour = 12;
+            	}
+            	else if (ihour > 12){
+            		ihour = ihour - 12;
+            	}
+            	
+            	switch (imonth) {
+            	case 1: finmonth = "Jan";
+            		break;
+            	case 2: finmonth = "Feb";
+        			break;
+            	case 3: finmonth = "Mar";
+        			break;
+            	case 4: finmonth = "Apr";
+        			break;
+            	case 5: finmonth = "May";
+        			break;
+            	case 6: finmonth = "Jun";
+        			break;
+            	case 7: finmonth = "Jul";
+        			break;
+            	case 8: finmonth = "Aug";
+        			break;
+            	case 9: finmonth = "Sep";
+        			break;
+            	case 10: finmonth = "Oct";
+        			break;
+            	case 11: finmonth = "Nov";
+        			break;
+            	case 12: finmonth = "Dec";
+        			break;
+    			default: finmonth = "dungoofed";
+    				break;
+            	}
+            	
+            	TextView arrtime = (TextView) view.findViewById(R.id.arrtime);
+            	arrtime.setText("Arrive: " + String.valueOf(ihour) + ":" + sminute + ampm + " " + finmonth + " " + sday + ", " + syear);
+            	
+            	
+            	
+            	tlay.addView(view);
+            }
             //TextView textview = (TextView) findViewById(R.id.textView1);
             //textview.setText(result);
+            
+            
         }
     }
     
@@ -157,7 +344,7 @@ public class DoSearch extends ActionBarActivity {
 		for (int i = 0; i < jArray.length(); i++){
 			JSONObject oneObject = jArray.getJSONObject(i);
 			JSONObject ride = oneObject.getJSONObject("ride");
-			result.append(ride.getString("DEPART_CITY") + ":" + ride.getString("ARRIVE_CITY") + ":" + ride.getString("DEPART_TIME") + "/");
+			result.append(ride.getString("TRIP_COST") + "NOTSOCODE" + ride.getString("DEPART_CITY") + "NOTSOCODE" + ride.getString("ARRIVE_CITY") + "NOTSOCODE" + ride.getString("DEPART_TIME") + "NOTSOCODE" + ride.getString("ARRIVE_TIME") + "NOTSOCODE" + ride.getString("URL") + "NOTSOCODE" + ride.getString("COMPANY_NAME") + "SECRETCODE");
 			/*TextView textview1 = (TextView) findViewById(R.id.tCol11);
 			textview1.setText(ride.getString("DEPART_CITY"));
 			TextView textview2 = (TextView) findViewById(R.id.tCol12);
@@ -187,4 +374,43 @@ public class DoSearch extends ActionBarActivity {
     	
     	return stream;
     }
+
+	@Override
+	public void onTabReselected(Tab arg0, FragmentTransaction arg1) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onTabSelected(Tab tab, FragmentTransaction ft) {
+		// TODO Auto-generated method stub
+		viewPager.setCurrentItem(tab.getPosition());
+	}
+
+	@Override
+	public void onTabUnselected(Tab arg0, FragmentTransaction arg1) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onTabSelected(android.app.ActionBar.Tab tab,
+			android.app.FragmentTransaction ft) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onTabUnselected(android.app.ActionBar.Tab tab,
+			android.app.FragmentTransaction ft) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onTabReselected(android.app.ActionBar.Tab tab,
+			android.app.FragmentTransaction ft) {
+		// TODO Auto-generated method stub
+		
+	}
 }
