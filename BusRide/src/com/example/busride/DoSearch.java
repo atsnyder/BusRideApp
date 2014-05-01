@@ -14,6 +14,7 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
 import android.annotation.SuppressLint;
+import android.app.ActionBar.LayoutParams;
 import android.app.ActionBar.TabListener;
 import android.content.Context;
 import android.content.Intent;
@@ -27,6 +28,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TableLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -395,8 +397,29 @@ public class DoSearch extends FragmentActivity implements ActionBar.TabListener,
             	arrtime.setText("Arrive: " + String.valueOf(ihour) + ":" + sminute + ampm + " " + finmonth + " " + sday + ", " + syear);
             	
             	
+            	//removed from new_table_row
+            	/*<Button
+                android:id="@+id/urlbutton"
+                style="?android:attr/buttonStyleSmall"
+                android:layout_width="wrap_content"
+                android:layout_height="34dp"
+                android:text="View" />*/
+            	
+            	Button button= new Button(getApplicationContext());
+            	button.setId(i);
+            	button.setText("View");
+            	final String url = cols[5]; 
+            	button.setOnClickListener(new View.OnClickListener()   
+            	{
+            	    public void onClick(View view) 
+            	     {
+            	    	startActivity(new Intent(Intent.ACTION_VIEW).setData(Uri.parse(url)));
+            	       }
+            	});
+            	LayoutParams lp = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
             	
             	tlay.addView(view);
+            	tlay.addView(button, lp);
             }
             //TextView textview = (TextView) findViewById(R.id.textView1);
             //textview.setText(result);
