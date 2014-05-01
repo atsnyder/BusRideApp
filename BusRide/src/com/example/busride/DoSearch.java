@@ -248,6 +248,19 @@ public class DoSearch extends FragmentActivity implements ActionBar.TabListener,
             	
             	String[] cols = rows[i].split("NOTSOCODE");
             	
+            	if(cols.length != 7)
+            	{
+            		Context context = getApplicationContext();
+                	CharSequence text = "No results for that day.";
+                	int duration = Toast.LENGTH_LONG;
+
+                	Toast toast = Toast.makeText(context, text, duration);
+                	toast.setGravity(Gravity.TOP, 0, 350);
+                	toast.show();
+                    finish();
+            		return;
+            	}
+            	
             	View view = getLayoutInflater().inflate(R.layout.new_table_row,tlay,false);
             	
             	TextView price = (TextView) view.findViewById(R.id.tCol21);
