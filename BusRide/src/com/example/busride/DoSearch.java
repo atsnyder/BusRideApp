@@ -4,33 +4,19 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.xmlpull.v1.XmlPullParserException;
-
-
-
 import android.support.v7.app.ActionBar.Tab;
-
-
-
-import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBar;
 import android.support.v4.app.Fragment;
-
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
 import android.annotation.SuppressLint;
 import android.app.ActionBar.TabListener;
-import android.app.ProgressDialog;
-
 import android.content.Context;
-
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
@@ -41,21 +27,19 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.webkit.WebView;
-import android.widget.EditText;
 import android.widget.TableLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.os.Build;
-import android.preference.PreferenceManager;
-
 import java.net.HttpURLConnection;
 import java.net.URL;
 
 public class DoSearch extends FragmentActivity implements ActionBar.TabListener, TabListener {
 
 	private static String URL = null;
-
+	private static String returnURL = null;
+	private static boolean radio = false;
+	private static boolean secondsearch = false;
+	
 	private ViewPager viewPager;
 	private TabsPagerAdapter mAdapter;
 	private android.app.ActionBar actionBar;
@@ -73,35 +57,51 @@ public class DoSearch extends FragmentActivity implements ActionBar.TabListener,
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_do_search);
 
-		viewPager = (ViewPager) findViewById(R.id.pager);
-        actionBar = getActionBar();
-        mAdapter = new TabsPagerAdapter(getSupportFragmentManager());
- 
-        viewPager.setAdapter(mAdapter);
-        actionBar.setHomeButtonEnabled(false);
-        actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
+        Intent intent = getIntent();
+        String message = intent.getStringExtra(MainActivity.EXTRA_MESSAGE);
+        String[] msgparts = message.split("THECODEISSTRONG");
+        String[] moarmsgparts = msgparts[1].split("YOUSEENOTHING");
+        URL = msgparts[0];
+        returnURL = moarmsgparts[1];
+        
+        if(moarmsgparts[0].equals("RoundTrip")){
+        	radio = true;
 		
-        for (String tab_name : tabs) {
-            actionBar.addTab(actionBar.newTab().setText(tab_name).setTabListener(this));
+			viewPager = (ViewPager) findViewById(R.id.pager);
+	        actionBar = getActionBar();
+	        mAdapter = new TabsPagerAdapter(getSupportFragmentManager());
+	 
+	        viewPager.setAdapter(mAdapter);
+	        actionBar.setHomeButtonEnabled(false);
+	        actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
+			
+	        for (String tab_name : tabs) {
+	            actionBar.addTab(actionBar.newTab().setText(tab_name).setTabListener(this));
+	        }
+			
+			viewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+	
+				@Override
+				public void onPageSelected(int position) {
+					// on changing the page
+					// make respected tab selected
+					actionBar.setSelectedNavigationItem(position);
+				}
+	
+				@Override
+				public void onPageScrolled(int arg0, float arg1, int arg2) {
+				}
+	
+				@Override
+				public void onPageScrollStateChanged(int arg0) {
+				}
+			});
+		
         }
-		
-		viewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-
-			@Override
-			public void onPageSelected(int position) {
-				// on changing the page
-				// make respected tab selected
-				actionBar.setSelectedNavigationItem(position);
-			}
-
-			@Override
-			public void onPageScrolled(int arg0, float arg1, int arg2) {
-			}
-
-			@Override
-			public void onPageScrollStateChanged(int arg0) {
-			}
-		});
+        else{
+        	setContentView(R.layout.activity_one_way);
+        	radio = false;
+        }
         
 		/*if (savedInstanceState == null) {
 			getSupportFragmentManager().beginTransaction()
@@ -113,15 +113,22 @@ public class DoSearch extends FragmentActivity implements ActionBar.TabListener,
     public void onStart() {
         super.onStart();
 
-        Intent intent = getIntent();
+        /*Intent intent = getIntent();
         String message = intent.getStringExtra(MainActivity.EXTRA_MESSAGE);
-        URL = message;
+        String[] msgparts = message.split("THECODEISSTRONG");
+        URL = msgparts[0];
+        
+        if(msgparts[1].equals("ReturnTrip")){
+        	radio = true;
+        }*/
         
         /*ProgressDialog progress = new ProgressDialog(this);
         progress.setTitle("Loading");
         progress.setMessage("Wait while loading...");
         progress.show();*/
 
+        secondsearch = false;
+        
         loadPage();
         //new DownloadXmlTask().execute(URL);
 
@@ -148,6 +155,10 @@ public class DoSearch extends FragmentActivity implements ActionBar.TabListener,
         if (wifiConnected || mobileConnected )
         {
         	new DownloadXmlTask().execute(URL);
+        	if (radio == true){
+        		//secondsearch = true;
+        		new DownloadXmlTask().execute(returnURL);
+        	}
         } else {
             showErrorPage();
         }
@@ -217,10 +228,20 @@ public class DoSearch extends FragmentActivity implements ActionBar.TabListener,
         @Override
         protected void onPostExecute(String result) {
             //setContentView(R.layout.activity_do_search);
-            
+            if (radio == false){
+            	setContentView(R.layout.activity_one_way);
+            }
             //System.out.println(result);
             TableLayout tlay = (TableLayout) findViewById(R.id.maintable);
-
+        	if (secondsearch) {
+        		tlay = (TableLayout) findViewById(R.id.rettable);
+        		secondsearch = false;
+        	}
+        	else {
+        		tlay = (TableLayout) findViewById(R.id.maintable);
+        		secondsearch = true;
+        	}
+            
             String[] rows = result.split("SECRETCODE");
 
             for (int i = 0; i<rows.length; i++){ 
@@ -447,7 +468,7 @@ public class DoSearch extends FragmentActivity implements ActionBar.TabListener,
 	public void onTabSelected(android.app.ActionBar.Tab tab,
 			android.app.FragmentTransaction ft) {
 		// TODO Auto-generated method stub
-		
+		viewPager.setCurrentItem(tab.getPosition());
 	}
 
 	@Override

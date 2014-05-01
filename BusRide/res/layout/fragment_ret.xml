@@ -4,11 +4,19 @@
     android:layout_height="match_parent"
     android:orientation="vertical" >
     
-    <TextView android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:text="Design Games Screen"
-        android:textSize="20dp"
-        android:layout_centerInParent="true"/>
+    <ScrollView
+                android:id="@+id/Return"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_weight="1"
+                android:scrollbars="none" >
+
+                <TableLayout
+                    android:id="@+id/rettable"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:stretchColumns="1" >
+                </TableLayout>
+            </ScrollView>
     
 </RelativeLayout>
