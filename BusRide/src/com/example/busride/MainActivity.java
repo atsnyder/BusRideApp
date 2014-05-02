@@ -8,27 +8,19 @@ import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Calendar;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import java.util.ArrayList;
-
 import android.content.Context;
 import android.widget.ArrayAdapter;
 import android.widget.Filter;
 import android.widget.Filterable;
-
 import android.support.v7.app.ActionBarActivity;
-import android.support.v7.app.ActionBar;
 import android.support.v4.app.Fragment;
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -46,9 +38,6 @@ import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Toast;
-import android.os.Build;
-
-
 
 
 public class MainActivity extends ActionBarActivity implements OnItemClickListener 
@@ -203,11 +192,20 @@ public class MainActivity extends ActionBarActivity implements OnItemClickListen
 		String todate = editText4.getText().toString();
 		CheckBox checkbox = ( CheckBox ) findViewById( R.id.checkBox1 );
 		Boolean radio = checkbox.isChecked();
+		String urlradio = null;
+		if (radio){
+			urlradio = "RoundTrip";
+		}
+		else{
+			urlradio = "OneWay";
+		}
 		
 		StringBuilder urlString = new StringBuilder();
+		StringBuilder returnURL = new StringBuilder();
 		
+		returnURL.append("http://murmuring-inlet-3093.herokuapp.com/rides/search.json?search[to_city]=" + fromcity + "&search[from_city]=" + tocity + "&date[to_Date]=" + fromdate + "&date[from_Date]=" + todate);
 		//urlString.append("http://murmuring-inlet-3093.herokuapp.com/rides/search.json?search[to_city]=new&search[from_city]=wash&date[to_Date]=4/23/2014&date[from_Date]=4/24/2014");
-		urlString.append("http://murmuring-inlet-3093.herokuapp.com/rides/search.json?search[to_city]=" + tocity + "&search[from_city]=" + fromcity + "&date[to_Date]=" + todate + "&date[from_Date]=" + fromdate);
+		urlString.append("http://murmuring-inlet-3093.herokuapp.com/rides/search.json?search[to_city]=" + tocity + "&search[from_city]=" + fromcity + "&date[to_Date]=" + todate + "&date[from_Date]=" + fromdate + "THECODEISSTRONG" + urlradio + "YOUSEENOTHING" + returnURL.toString());
 		System.out.println(urlString.toString());
 		intent.putExtra(EXTRA_MESSAGE, urlString.toString());
 		startActivity(intent);	

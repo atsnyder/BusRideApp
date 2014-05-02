@@ -39,12 +39,7 @@
            android:layout_height="wrap_content"
            android:text="To: Washington, DC" />
 
-       <Button
-           android:id="@+id/urlbutton"
-           style="?android:attr/buttonStyleSmall"
-           android:layout_width="wrap_content"
-           android:layout_height="34dp"
-           android:text="View" />
+       
     
 	</LinearLayout>
        
