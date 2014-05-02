@@ -229,9 +229,17 @@ public class MainActivity extends ActionBarActivity implements OnItemClickListen
 		}
 	}
 	
-	public void showDatePickerDialog(View v) 
+	public void showDatePickerDialog(View clickedView) 
 	{
-	    DialogFragment newFragment = new DatePickerFragment((EditText) v);
+
+		View fromView = findViewById(R.id.editText3);
+		View toView = findViewById(R.id.editText4);
+		
+		if(clickedView.getId() == fromView.getId()) clickedView = fromView;
+		else clickedView = toView;
+		
+		
+	    DialogFragment newFragment = new DatePickerFragment((EditText) clickedView, (EditText) toView, (EditText) fromView);
 	    newFragment.show(getFragmentManager(), "datePicker");
 	}
 	
@@ -240,12 +248,17 @@ public class MainActivity extends ActionBarActivity implements OnItemClickListen
 	public static class DatePickerFragment extends DialogFragment implements DatePickerDialog.OnDateSetListener 
 	{
 		
-		public EditText activity_edittext;
+		public EditText clickedText;
+		public EditText toText;
+		public EditText fromText;
 
-		public DatePickerFragment(EditText edit_text) 
+		public DatePickerFragment(EditText clicked, EditText to, EditText from) 
 		{
-		    activity_edittext = edit_text;
+		    clickedText = clicked;
+		    toText = to;
+		    fromText = from;
 		}
+		
 		@Override
 		public Dialog onCreateDialog(Bundle savedInstanceState)
 		{
@@ -255,34 +268,26 @@ public class MainActivity extends ActionBarActivity implements OnItemClickListen
 			int month = c.get(Calendar.MONTH);
 			int day = c.get(Calendar.DAY_OF_MONTH);
 			
-			//load previously saved to date
-			if(activity_edittext.getId() == R.id.editText3)
-			{
-								
-				if(toEdited == true)
-				{
-					year = toDate.get(Calendar.YEAR);
-					month = toDate.get(Calendar.MONTH);
-					day = toDate.get(Calendar.DAY_OF_MONTH);
-				}
-				
-				toEdited = true;
-			}
 			
 			//load previously saved from date
-			if(activity_edittext.getId() == R.id.editText4)
+			if(clickedText.getId() == fromText.getId())
 			{
 
-				if(fromEdited == true)
-				{
-					year = fromDate.get(Calendar.YEAR);
-					month = fromDate.get(Calendar.MONTH);
-					day = fromDate.get(Calendar.DAY_OF_MONTH);
-				}
-				
-				fromEdited = true;
-			}
+				year = fromDate.get(Calendar.YEAR);
+				month = fromDate.get(Calendar.MONTH);
+				day = fromDate.get(Calendar.DAY_OF_MONTH);
 
+			}	
+			
+			
+			//load previously saved to date
+			if(clickedText.getId() == toText.getId())
+			{
+				year = toDate.get(Calendar.YEAR);
+				month = toDate.get(Calendar.MONTH);
+				day = toDate.get(Calendar.DAY_OF_MONTH);
+			}
+			
 
 				
 			// Create a new instance of DatePickerDialog and return it
@@ -291,46 +296,74 @@ public class MainActivity extends ActionBarActivity implements OnItemClickListen
 
 		public void onDateSet(DatePicker view, int year, int month, int day)
 		{
+			//today variables
+			final Calendar c = Calendar.getInstance();
+			int d = c.get(Calendar.DAY_OF_MONTH);
+			int m = c.get(Calendar.MONTH);
+			int y = c.get(Calendar.YEAR);
 			
-			//update to date variables
-			if(activity_edittext.getId() == R.id.editText3)
+			int fD, fM, fY;//from variables
+			int tD, tM, tY;//to variables
+
+			
+		    
+		    fD = fromDate.get(Calendar.DAY_OF_MONTH);
+		    fM = fromDate.get(Calendar.MONTH) + 1;
+		    fY = fromDate.get(Calendar.YEAR);
+		    
+		    tD = toDate.get(Calendar.DAY_OF_MONTH);
+		    tM = toDate.get(Calendar.MONTH) + 1;
+		    tY = toDate.get(Calendar.YEAR);
+
+			
+			//update fromDate 
+			if(clickedText.getId() == fromText.getId()) 
 			{
-				toDate.set(Calendar.YEAR, year);
-				toDate.set(Calendar.MONTH, month);
-				toDate.set(Calendar.DAY_OF_MONTH, day);
+				fromDate.set(year, month, day);
 			}
 			
-			
-			//update from date variables
-			if(activity_edittext.getId() == R.id.editText4)
+		
+			//update toDate
+			if(clickedText.getId() == toText.getId())
 			{
-				fromDate.set(Calendar.YEAR, year);
-				fromDate.set(Calendar.MONTH, month);
-				fromDate.set(Calendar.DAY_OF_MONTH, day);
-			}
+				toDate.set(year, month, day);
+			}	
 			
-			//make sure to date is before from date
-			if(fromDate.before(toDate))
-			{
-				
-				if(activity_edittext.getId() == R.id.editText3)
-				{
-				    toDate.set(fromDate.get(Calendar.YEAR), fromDate.get(Calendar.MONTH), fromDate.get(Calendar.DAY_OF_MONTH));
-					year = fromDate.get(Calendar.YEAR);
-				    month = fromDate.get(Calendar.MONTH);
-				    day = fromDate.get(Calendar.DAY_OF_MONTH);
-				}
-				
-				if(activity_edittext.getId() == R.id.editText4)
-				{
-				    fromDate.set(toDate.get(Calendar.YEAR), toDate.get(Calendar.MONTH), toDate.get(Calendar.DAY_OF_MONTH));
-					year = toDate.get(Calendar.YEAR);
-				    month = toDate.get(Calendar.MONTH);
-				    day = toDate.get(Calendar.DAY_OF_MONTH);
-				}
-			}
 						
-			activity_edittext.setText(String.valueOf(month + 1 ) + "/" +   String.valueOf(day) + "/" + String.valueOf(year));
+			if(fromDate.before(c))
+			{
+				fromDate.set(y, m, d);
+			}
+			
+			if(toDate.before(c)) 
+			{
+				toDate.set(y, m, d);
+			}
+			
+			
+	        fD = fromDate.get(Calendar.DAY_OF_MONTH);
+	        fM = fromDate.get(Calendar.MONTH) + 1;
+	        fY = fromDate.get(Calendar.YEAR);
+	    			
+			
+			tD = toDate.get(Calendar.DAY_OF_MONTH);
+		    tM = toDate.get(Calendar.MONTH) + 1;
+		    tY = toDate.get(Calendar.YEAR);
+		        
+			
+			if(toDate.before(fromDate))
+			{
+				
+				toDate.set(fY, fM - 1, fD);
+				
+			    tD = toDate.get(Calendar.DAY_OF_MONTH);
+		        tM = toDate.get(Calendar.MONTH) + 1;
+		        tY = toDate.get(Calendar.YEAR);
+		    }
+
+			toText.setText(String.valueOf(tM) + "/" +   String.valueOf(tD) + "/" + String.valueOf(tY));			
+	        fromText.setText(String.valueOf(fM) + "/" +   String.valueOf(fD) + "/" + String.valueOf(fY));
+
 			
 		}
 	}
