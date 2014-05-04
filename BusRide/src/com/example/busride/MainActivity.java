@@ -24,6 +24,7 @@ import android.app.DialogFragment;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -178,37 +179,50 @@ public class MainActivity extends ActionBarActivity implements OnItemClickListen
 	
 	public void dosearch(View view)
 	{
-		Intent intent = new Intent(this, DoSearch.class);
-		
-		EditText editText1 = (EditText) findViewById(R.id.editText1);
-		String fromcity = editText1.getText().toString();
-		fromcity = fromcity.replace(" ", "+"); 
-		EditText editText2 = (EditText) findViewById(R.id.editText2);
-		String tocity = editText2.getText().toString();
-		tocity = tocity.replace(" ", "+");
-		EditText editText3 = (EditText) findViewById(R.id.editText3);
-		String fromdate = editText3.getText().toString();
-		EditText editText4 = (EditText) findViewById(R.id.editText4);
-		String todate = editText4.getText().toString();
-		CheckBox checkbox = ( CheckBox ) findViewById( R.id.checkBox1 );
-		Boolean radio = checkbox.isChecked();
-		String urlradio = null;
-		if (radio){
-			urlradio = "RoundTrip";
+		if(findViewById(R.id.editText1).getContext().getText(R.id.editText1).toString().trim().equals("")||findViewById(R.id.editText2).getContext().getText(R.id.editText2).toString().trim().equals(""))
+		{
+			Context context = getApplicationContext();
+	    	CharSequence text = "Please fill in all fields.";
+	    	int duration = Toast.LENGTH_LONG;
+
+	    	Toast toast = Toast.makeText(context, text, duration);
+	    	toast.setGravity(Gravity.TOP, 0, 350);
+	    	toast.show();
 		}
-		else{
-			urlradio = "OneWay";
+		else
+		{
+			Intent intent = new Intent(this, DoSearch.class);
+		
+			EditText editText1 = (EditText) findViewById(R.id.editText1);
+			String fromcity = editText1.getText().toString();
+			fromcity = fromcity.replace(" ", "+"); 
+			EditText editText2 = (EditText) findViewById(R.id.editText2);
+			String tocity = editText2.getText().toString();
+			tocity = tocity.replace(" ", "+");
+			EditText editText3 = (EditText) findViewById(R.id.editText3);
+			String fromdate = editText3.getText().toString();
+			EditText editText4 = (EditText) findViewById(R.id.editText4);
+			String todate = editText4.getText().toString();
+			CheckBox checkbox = ( CheckBox ) findViewById( R.id.checkBox1 );
+			Boolean radio = checkbox.isChecked();
+			String urlradio = null;
+			if (radio){
+				urlradio = "RoundTrip";
+			}
+			else{
+				urlradio = "OneWay";
+			}
+			
+			StringBuilder urlString = new StringBuilder();
+			StringBuilder returnURL = new StringBuilder();
+			
+			returnURL.append("http://murmuring-inlet-3093.herokuapp.com/rides/search.json?search[to_city]=" + fromcity + "&search[from_city]=" + tocity + "&date[to_Date]=" + fromdate + "&date[from_Date]=" + todate);
+			//urlString.append("http://murmuring-inlet-3093.herokuapp.com/rides/search.json?search[to_city]=new&search[from_city]=wash&date[to_Date]=4/23/2014&date[from_Date]=4/24/2014");
+			urlString.append("http://murmuring-inlet-3093.herokuapp.com/rides/search.json?search[to_city]=" + tocity + "&search[from_city]=" + fromcity + "&date[to_Date]=" + todate + "&date[from_Date]=" + fromdate + "THECODEISSTRONG" + urlradio + "YOUSEENOTHING" + returnURL.toString());
+			System.out.println(urlString.toString());
+			intent.putExtra(EXTRA_MESSAGE, urlString.toString());
+			startActivity(intent);	
 		}
-		
-		StringBuilder urlString = new StringBuilder();
-		StringBuilder returnURL = new StringBuilder();
-		
-		returnURL.append("http://murmuring-inlet-3093.herokuapp.com/rides/search.json?search[to_city]=" + fromcity + "&search[from_city]=" + tocity + "&date[to_Date]=" + fromdate + "&date[from_Date]=" + todate);
-		//urlString.append("http://murmuring-inlet-3093.herokuapp.com/rides/search.json?search[to_city]=new&search[from_city]=wash&date[to_Date]=4/23/2014&date[from_Date]=4/24/2014");
-		urlString.append("http://murmuring-inlet-3093.herokuapp.com/rides/search.json?search[to_city]=" + tocity + "&search[from_city]=" + fromcity + "&date[to_Date]=" + todate + "&date[from_Date]=" + fromdate + "THECODEISSTRONG" + urlradio + "YOUSEENOTHING" + returnURL.toString());
-		System.out.println(urlString.toString());
-		intent.putExtra(EXTRA_MESSAGE, urlString.toString());
-		startActivity(intent);	
 	}
 
 	/**
