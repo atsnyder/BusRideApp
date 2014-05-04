@@ -28,15 +28,18 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AutoCompleteTextView;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 
@@ -136,6 +139,22 @@ public class MainActivity extends ActionBarActivity implements OnItemClickListen
 	    //Autocomplete code ends    
 		
 		
+	    Button reset = (Button)findViewById(R.id.button2);
+	    reset.setOnClickListener(new OnClickListener() {
+
+	        @Override
+	        public void onClick(View v) {
+	        	EditText editText1 = (EditText)findViewById(R.id.editText1);
+	            editText1.setText("", TextView.BufferType.EDITABLE);
+	            EditText editText2 = (EditText)findViewById(R.id.editText2);
+	            editText2.setText("", TextView.BufferType.EDITABLE);
+	            EditText editText3 = (EditText)findViewById(R.id.editText3);
+	            editText3.setText("", TextView.BufferType.EDITABLE);
+	            EditText editText4 = (EditText)findViewById(R.id.editText4);
+	            editText4.setText("", TextView.BufferType.EDITABLE);
+	        }
+	    });
+	     
 		CheckBox repeatChkBx = ( CheckBox ) findViewById( R.id.checkBox1 );
 		repeatChkBx.setOnCheckedChangeListener(new OnCheckedChangeListener()
 		{
@@ -174,6 +193,10 @@ public class MainActivity extends ActionBarActivity implements OnItemClickListen
 			return true;
 		}
 		return super.onOptionsItemSelected(item);
+	}
+	
+	public void resetfields(View view){
+		
 	}
 	
 	public void dosearch(View view)
