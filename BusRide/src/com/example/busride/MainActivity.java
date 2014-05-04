@@ -156,15 +156,15 @@ public class MainActivity extends ActionBarActivity implements OnItemClickListen
 		});
 	}
 
-	@Override
+	/*@Override
 	public boolean onCreateOptionsMenu(Menu menu)
 	{
 		// Inflate the menu; this adds items to the action bar if it is present.
 		getMenuInflater().inflate(R.menu.main, menu);
 		return true;
-	}
+	}*/
 
-	@Override
+	/*@Override
 	public boolean onOptionsItemSelected(MenuItem item) 
 	{
 		// Handle action bar item clicks here. The action bar will
@@ -175,11 +175,15 @@ public class MainActivity extends ActionBarActivity implements OnItemClickListen
 			return true;
 		}
 		return super.onOptionsItemSelected(item);
-	}
+	}*/
 	
 	public void dosearch(View view)
 	{
-		if(findViewById(R.id.editText1).getContext().getText(R.id.editText1).toString().trim().equals("")||findViewById(R.id.editText2).getContext().getText(R.id.editText2).toString().trim().equals(""))
+		EditText to = (EditText) findViewById(R.id.editText2);
+		EditText from = (EditText) findViewById(R.id.editText1);
+		EditText date = (EditText) findViewById(R.id.editText3);
+		
+		if(to.getText().toString().trim().equals("")||from.getText().toString().trim().equals("")||date.getText().toString().trim().equals(""))
 		{
 			Context context = getApplicationContext();
 	    	CharSequence text = "Please fill in all fields.";
