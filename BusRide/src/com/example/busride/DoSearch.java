@@ -16,6 +16,7 @@ import android.support.v4.view.ViewPager;
 import android.annotation.SuppressLint;
 import android.app.ActionBar.LayoutParams;
 import android.app.ActionBar.TabListener;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
@@ -53,6 +54,7 @@ public class DoSearch extends FragmentActivity implements ActionBar.TabListener,
     private static boolean mobileConnected = false;
 	
 	private String[] tabs = {"Depart", "Return"};
+	private ProgressDialog progress = null;
 	
 	@SuppressLint("NewApi")
 	@Override
@@ -125,10 +127,10 @@ public class DoSearch extends FragmentActivity implements ActionBar.TabListener,
         	radio = true;
         }*/
         
-        /*ProgressDialog progress = new ProgressDialog(this);
+        progress = new ProgressDialog(this);
         progress.setTitle("Loading");
         progress.setMessage("Wait while loading...");
-        progress.show();*/
+        progress.show();
 
         secondsearch = false;
         
@@ -136,7 +138,7 @@ public class DoSearch extends FragmentActivity implements ActionBar.TabListener,
         //new DownloadXmlTask().execute(URL);
 
         
-        /*progress.dismiss();*/
+        //progress.dismiss();
         //TextView textview = (TextView) findViewById(R.id.textView1);
         //textview.setText(message);
         // = message;
@@ -178,7 +180,7 @@ public class DoSearch extends FragmentActivity implements ActionBar.TabListener,
         super.finish();
     }
 
-	@Override
+	/*@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 
 		// Inflate the menu; this adds items to the action bar if it is present.
@@ -196,7 +198,7 @@ public class DoSearch extends FragmentActivity implements ActionBar.TabListener,
 			return true;
 		}
 		return super.onOptionsItemSelected(item);
-	}
+	}*/
 
 	/**
 	 * A placeholder fragment containing a simple view.
@@ -421,7 +423,9 @@ public class DoSearch extends FragmentActivity implements ActionBar.TabListener,
             	
             	tlay.addView(view);
             	tlay.addView(button, lp);
+            	
             }
+            progress.dismiss();
             //TextView textview = (TextView) findViewById(R.id.textView1);
             //textview.setText(result);
             
