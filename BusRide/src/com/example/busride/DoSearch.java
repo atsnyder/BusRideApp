@@ -19,6 +19,7 @@ import android.app.ActionBar.TabListener;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
@@ -32,6 +33,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TableLayout;
+import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 import java.net.HttpURLConnection;
@@ -47,6 +49,7 @@ public class DoSearch extends FragmentActivity implements ActionBar.TabListener,
 	private ViewPager viewPager;
 	private TabsPagerAdapter mAdapter;
 	private android.app.ActionBar actionBar;
+	private View v;
 	
 	// Whether there is a Wi-Fi connection.
     private static boolean wifiConnected = false;
@@ -126,6 +129,8 @@ public class DoSearch extends FragmentActivity implements ActionBar.TabListener,
         if(msgparts[1].equals("ReturnTrip")){
         	radio = true;
         }*/
+        
+
         
         progress = new ProgressDialog(this);
         progress.setTitle("Loading");
@@ -399,6 +404,8 @@ public class DoSearch extends FragmentActivity implements ActionBar.TabListener,
             	TextView arrtime = (TextView) view.findViewById(R.id.arrtime);
             	arrtime.setText("Arrive: " + String.valueOf(ihour) + ":" + sminute + ampm + " " + finmonth + " " + sday + ", " + syear);
             	
+            	TextView company = (TextView) view.findViewById(R.id.company);
+            	company.setText("Company: " + cols[6]);
             	
             	//removed from new_table_row
             	/*<Button
@@ -421,9 +428,15 @@ public class DoSearch extends FragmentActivity implements ActionBar.TabListener,
             	});
             	LayoutParams lp = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
             	
+            	Context con = view.getContext();
+            	
+                v = new View(con);
+                v.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.FILL_PARENT, 1));
+                v.setBackgroundColor(Color.rgb(51, 51, 51));
+            	
             	tlay.addView(view);
             	tlay.addView(button, lp);
-            	
+            	tlay.addView(v);
             }
             progress.dismiss();
             //TextView textview = (TextView) findViewById(R.id.textView1);
